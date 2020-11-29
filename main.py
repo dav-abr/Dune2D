@@ -14,7 +14,7 @@ for col in range(COLS):
     for row in range(ROWS):
         world_map.grid[col][row].add_neighbors()
 
-world_map.grid[10][10] = Tank(10, 10, sc, world_map)
+world_map.grid[3][3] = Tank(3, 3, sc, world_map)
 target = None
 
 
@@ -41,6 +41,13 @@ while True:
     world_map.draw()
 
     get_click_mouse_pos()
+
+    for e in pg.event.get():
+        if e.type == pg.MOUSEBUTTONDOWN:
+            if e.button == 4: CELL_SIZE += 1
+            if e.button == 5: CELL_SIZE -= 1
+
+
 
     for col in range(COLS):
         for row in range(ROWS):

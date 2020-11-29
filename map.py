@@ -1,12 +1,15 @@
 import pygame as pg
 from settings import *
 from cell import Cell
-from wall import Wall
-from random import random
+from ground import Ground
 
 
 def create_cell(col, row, sc, map):
     return Cell(col, row, sc, map)# if random() > 0.5 else Wall(col, row, sc, map)
+
+
+def create_ground(col, row, sc, map):
+    return Ground(col, row, sc, map)# if random() > 0.5 else Wall(col, row, sc, map)
 
 
 class Map:
@@ -17,18 +20,15 @@ class Map:
         if grid:
             self.grid = grid
         else:
-            self.grid = [[create_cell(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
-
-    def get_circle(self, x, y):
-        return (x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2), self.cell_size // 4
+            self.grid = [[create_ground(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
 
     def drawGrid(self):
-        for x in range(WINDOW_WIDTH // CELL_SIZE):
-            for y in range(WINDOW_HEIGHT // CELL_SIZE):
+        for x in range(COLS):
+            for y in range(ROWS):
                 rect = pg.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                 pg.draw.rect(self.sc, pg.Color('white'), rect, 1)
 
     def draw(self):
-        self.sc.fill(pg.Color('black'))
+        self.sc.fill((166, 130, 66))
 
         self.drawGrid()

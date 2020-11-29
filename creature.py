@@ -104,38 +104,38 @@ class Creature(Cell):
                     right = to - self.direction
 
             if left <= right:
-                self.direction = (self.direction + 5) % 360
+                self.direction = (self.direction + 11.25) % 360
             else:
-                self.direction = (self.direction - 5) % 360
+                self.direction = (self.direction - 11.25) % 360
 
     def move(self):
         if len(self.goto_path):
             next = self.goto_path[0]
             end = self.goto_path[-1]
 
-            if next.i < self.i and next.j > self.j and self.direction != 315:
-                self.rotate(315)
-                return
-            if next.i < self.i and self.j == next.j and self.direction != 270:
-                self.rotate(270)
-                return
-            if next.i < self.i and next.j < self.j and self.direction != 225:
-                self.rotate(225)
-                return
-            if self.i == next.i and next.j < self.j and self.direction != 180:
-                self.rotate(180)
-                return
-            if next.i > self.i and next.j < self.j and self.direction != 135:
+            if next.i < self.i and next.j > self.j and self.direction != 135:
                 self.rotate(135)
                 return
-            if next.i > self.i and self.j == next.j and self.direction != 90:
+            if next.i < self.i and self.j == next.j and self.direction != 90:
                 self.rotate(90)
                 return
-            if next.i > self.i and next.j > self.j and self.direction != 45:
+            if next.i < self.i and next.j < self.j and self.direction != 45:
                 self.rotate(45)
                 return
-            if self.i == next.i and next.j > self.j and self.direction != 0:
+            if self.i == next.i and next.j < self.j and self.direction != 0:
                 self.rotate(0)
+                return
+            if next.i > self.i and next.j < self.j and self.direction != 315:
+                self.rotate(315)
+                return
+            if next.i > self.i and self.j == next.j and self.direction != 270:
+                self.rotate(270)
+                return
+            if next.i > self.i and next.j > self.j and self.direction != 225:
+                self.rotate(225)
+                return
+            if self.i == next.i and next.j > self.j and self.direction != 180:
+                self.rotate(180)
                 return
 
             if self.x == next.x and self.y == next.y:
@@ -143,9 +143,9 @@ class Creature(Cell):
                 return
 
             if not self.x == next.x:
-                self.x += -get_sign(self.x - next.x) * 2
+                self.x += -get_sign(self.x - next.x) * CELL_SIZE // 8
             if not self.y == next.y:
-                self.y += -get_sign(self.y - next.y) * 2
+                self.y += -get_sign(self.y - next.y) * CELL_SIZE // 8
 
             self.world_map.grid[self.i][self.j] = Cell(self.i, self.j, self.sc, self.world_map)
             self.world_map.grid[self.i][self.j].add_neighbors()
