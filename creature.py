@@ -12,6 +12,7 @@ class Creature(Cell):
         self.closed_set = []
         self.goto_path = []
         self.direction = 90
+        self.target = False
 
     def accept_position(self):
         self.open_set = [self]

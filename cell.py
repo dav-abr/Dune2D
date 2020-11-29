@@ -38,5 +38,10 @@ class Cell:
         if i < COLS - 1 and j < ROWS - 1:
             self.neighbors.append(grid[i + 1][j + 1])
 
+    def update_neighbors(self):
+        self.add_neighbors()
+        for neighbor in self.neighbors:
+            neighbor.add_neighbors()
+
     def draw(self):
         pass

@@ -11,7 +11,7 @@ class Tank(Creature):
 
     def draw(self):
         super().draw()
-        pg.draw.rect(self.sc, pg.Color('red'), pg.Rect(self.x, self.y, CELL_SIZE, CELL_SIZE))
+        pg.draw.rect(self.sc, pg.Color('green' if self.target else 'red'), pg.Rect(self.x, self.y, CELL_SIZE, CELL_SIZE))
         pg.draw.rect(
             self.sc,
             pg.Color('black'),

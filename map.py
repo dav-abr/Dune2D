@@ -6,7 +6,7 @@ from random import random
 
 
 def create_cell(col, row, sc, map):
-    return Cell(col, row, sc, map) if random() > 0.2 else Wall(col, row, sc, map)
+    return Cell(col, row, sc, map)# if random() > 0.5 else Wall(col, row, sc, map)
 
 
 class Map:

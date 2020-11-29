@@ -1,5 +1,6 @@
 import pygame as pg
 from tank import Tank
+from wall import Wall
 from settings import *
 from map import Map
 
@@ -25,9 +26,14 @@ def get_click_mouse_pos():
     if click[0]:
         if world_map.grid[grid_x][grid_y].tank:
             target = world_map.grid[grid_x][grid_y]
+            target.target = True
         elif target and not world_map.grid[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
             target.go_to(world_map.grid[grid_x][grid_y])
+            target.target = False
             target = None
+        elif not target:
+            world_map.grid[grid_x][grid_y] = Wall(grid_x, grid_y, sc, world_map)
+            world_map.grid[grid_x][grid_y].update_neighbors()
     return (grid_x, grid_y) if click[0] else False
 
 
