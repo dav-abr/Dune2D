@@ -30,17 +30,6 @@ class Tank(Creature):
 
     def draw(self):
         super().draw()
-        # pg.draw.rect(self.sc, pg.Color('green' if self.target else 'red'), pg.Rect(self.x, self.y, CELL_SIZE, CELL_SIZE))
-        # pg.draw.rect(
-        #     self.sc,
-        #     pg.Color('black'),
-        #     pg.Rect(
-        #         self.x + CELL_SIZE // 4 + CELL_SIZE // 4 * math.sin(math.radians(self.direction)),
-        #         self.y + CELL_SIZE // 4 + CELL_SIZE // 4 * math.cos(math.radians(self.direction)),
-        #         CELL_SIZE // 2,
-        #         CELL_SIZE // 2
-        #     )
-        # )
 
         if self.direction == 0:
             self.last_sprite = self.sprites['straight_up']
@@ -78,11 +67,4 @@ class Tank(Creature):
         if self.direction == 292.5:
             self.last_sprite = self.sprites['horizontal_right_down']
 
-        # if self.direction in (67.5, 157.5, 247.5, 337.5):
-        #     self.last_sprite = pg.transform.rotate(self.sprites['angle_left'], self.direction - 22.5)
-        #     self.last_position = 'angle_left'
-
-        # new_rect = self.last_sprite.get_rect(center=(self.x + CELL_SIZE // 2, self.y + CELL_SIZE // 2))
-
         self.sc.blit(self.last_sprite, (self.x, self.y, CELL_SIZE, CELL_SIZE))
-        # (new_rect[0] - 20, new_rect[1] - 20)

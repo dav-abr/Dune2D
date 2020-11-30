@@ -8,14 +8,14 @@ class Creature(Cell):
     def __init__(self, i, j, sc, world_map):
         super().__init__(i, j, sc, world_map)
         self.previous = None
-        self.open_set = [self]
+        self.open_set = [self.world_map.ground[self.i][self.j]]
         self.closed_set = []
         self.goto_path = []
         self.direction = 90
         self.target = False
 
     def accept_position(self):
-        self.open_set = [self]
+        self.open_set = [self.world_map.ground[self.i][self.j]]
         self.closed_set = []
         self.goto_path = []
         self.add_neighbors()
@@ -25,7 +25,6 @@ class Creature(Cell):
 
         alt_path = []
 
-        print(self.i, self.j, self.open_set, self.closed_set, self.goto_path)
         while len(self.open_set) > 0:
             winner = 0
 
@@ -40,31 +39,32 @@ class Creature(Cell):
                 break
 
             self.open_set.remove(current)
-
             self.closed_set.append(current)
-
             neighbors = current.neighbors
 
             for i in range(len(neighbors)):
                 neighbor = neighbors[i]
+                ground_neighbor = neighbor[0]
                 new_path = False
 
-                if (neighbor not in self.closed_set) and type(neighbor) != Wall and type(neighbor) != Creature:
-                    tempG = current.g + neighbor.g
+                if (ground_neighbor not in self.closed_set) and\
+                   not isinstance(neighbor[0], Wall) and\
+                   not isinstance(neighbor[1], Creature):
+                    tempG = current.g + ground_neighbor.g
 
-                    if neighbor in self.open_set:
-                        if tempG < neighbor.g:
-                            neighbor.g = tempG
+                    if ground_neighbor in self.open_set:
+                        if tempG < ground_neighbor.g:
+                            ground_neighbor.g = tempG
                             new_path = True
                     else:
-                        neighbor.g = tempG
+                        ground_neighbor.g = tempG
                         new_path = True
-                        self.open_set.append(neighbor)
+                        self.open_set.append(ground_neighbor)
 
                     if new_path:
-                        neighbor.h = heuristic(neighbor, end)
-                        neighbor.f = neighbor.g + neighbor.h
-                        neighbor.previous = current
+                        ground_neighbor.h = heuristic(ground_neighbor, end)
+                        ground_neighbor.f = ground_neighbor.g + ground_neighbor.h
+                        ground_neighbor.previous = current
                         alt_path.append(current)
 
         if len(self.open_set) == 0:
@@ -81,12 +81,11 @@ class Creature(Cell):
 
         for col in range(COLS):
             for row in range(ROWS):
-                self.world_map.grid[col][row].previous = None
+                self.world_map.ground[col][row].previous = None
+                self.world_map.creatures[col][row].previous = None
 
         path.reverse()
-
-        print(list(map(lambda item: (item.i, item.j), path)))
-        self.goto_path = path
+        self.goto_path = path[:-1]
 
     def rotate(self, to):
         self.direction = (self.direction + 360) % 360
@@ -138,18 +137,20 @@ class Creature(Cell):
                 self.rotate(180)
                 return
 
-            if self.x == next.x and self.y == next.y:
-                self.goto_path.pop(0)
-                return
-
             if not self.x == next.x:
                 self.x += -get_sign(self.x - next.x) * CELL_SIZE // 8
             if not self.y == next.y:
                 self.y += -get_sign(self.y - next.y) * CELL_SIZE // 8
 
-            self.world_map.grid[self.i][self.j] = Cell(self.i, self.j, self.sc, self.world_map)
-            self.world_map.grid[self.i][self.j].add_neighbors()
-            self.world_map.grid[next.i][next.j] = self
+            if self.x == next.x and self.y == next.y:
+                print('akjsdhhjkaskjhd')
+                self.goto_path.pop(0)
+                self.update_neighbors()
+                return
+
+            self.world_map.creatures[self.i][self.j] = Cell(self.i, self.j, self.sc, self.world_map)
+            self.world_map.ground[self.i][self.j].add_neighbors()
+            self.world_map.creatures[next.i][next.j] = self
             self.i = next.i
             self.j = next.j
 

@@ -1,8 +1,8 @@
 import pygame as pg
 from tank import Tank
-from wall import Wall
 from settings import *
 from map import Map
+from wall import Wall
 
 pg.init()
 sc = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -10,11 +10,14 @@ clock = pg.time.Clock()
 
 world_map = Map(CELL_SIZE, sc)
 
+world_map.creatures[3][3] = Tank(3, 3, sc, world_map)
+world_map.creatures[4][4] = Tank(4, 4, sc, world_map)
+world_map.ground[5][5] = Wall(5, 5, sc, world_map)
+
 for col in range(COLS):
     for row in range(ROWS):
-        world_map.grid[col][row].add_neighbors()
+        world_map.ground[col][row].add_neighbors()
 
-world_map.grid[3][3] = Tank(3, 3, sc, world_map)
 target = None
 
 
@@ -24,16 +27,16 @@ def get_click_mouse_pos():
     grid_x, grid_y = x // CELL_SIZE, y // CELL_SIZE
     click = pg.mouse.get_pressed()
     if click[0]:
-        if world_map.grid[grid_x][grid_y].tank:
-            target = world_map.grid[grid_x][grid_y]
+        if world_map.creatures[grid_x][grid_y] and world_map.creatures[grid_x][grid_y].tank:
+            target = world_map.creatures[grid_x][grid_y]
             target.target = True
-        elif target and not world_map.grid[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
-            target.go_to(world_map.grid[grid_x][grid_y])
+        elif target and not world_map.ground[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
+            target.go_to(world_map.ground[grid_x][grid_y])
             target.target = False
             target = None
-        elif not target:
-            world_map.grid[grid_x][grid_y] = Wall(grid_x, grid_y, sc, world_map)
-            world_map.grid[grid_x][grid_y].update_neighbors()
+        # elif not target:
+        #     world_map.ground[grid_x][grid_y] = Wall(grid_x, grid_y, sc, world_map)
+        #     world_map.ground[grid_x][grid_y].update_neighbors()
     return (grid_x, grid_y) if click[0] else False
 
 
@@ -47,11 +50,14 @@ while True:
             if e.button == 4: CELL_SIZE += 1
             if e.button == 5: CELL_SIZE -= 1
 
-
+    for col in range(COLS):
+        for row in range(ROWS):
+            world_map.ground[col][row].draw()
 
     for col in range(COLS):
         for row in range(ROWS):
-            world_map.grid[col][row].draw()
+            if world_map.creatures[col][row]:
+                world_map.creatures[col][row].draw()
 
     clock.tick(FPS)
     pg.display.flip()

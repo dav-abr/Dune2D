@@ -15,33 +15,39 @@ class Cell:
         self.wall = False
         self.tank = False
         self.neighbors = []
+        self.previous = None
+
+    def __str__(self):
+        return '{0} {1}'.format(self.i, self.j)
 
     def add_neighbors(self):
-        grid = self.world_map.grid
+        ground = self.world_map.ground
+        creatures = self.world_map.creatures
         i, j = self.i, self.j
         self.neighbors = []
 
         if i < COLS - 1:
-            self.neighbors.append(grid[i + 1][j])
+            self.neighbors.append([ground[i + 1][j], creatures[i + 1][j]])
         if i > 0:
-            self.neighbors.append(grid[i - 1][j])
+            self.neighbors.append([ground[i - 1][j], creatures[i - 1][j]])
         if j < ROWS - 1:
-            self.neighbors.append(grid[i][j + 1])
+            self.neighbors.append([ground[i][j + 1], creatures[i][j + 1]])
         if j > 0:
-            self.neighbors.append(grid[i][j - 1])
+            self.neighbors.append([ground[i][j - 1], creatures[i][j - 1]])
         if i > 0 and j > 0:
-            self.neighbors.append(grid[i - 1][j - 1])
+            self.neighbors.append([ground[i - 1][j - 1], creatures[i - 1][j - 1]])
         if i < COLS - 1 and j > 0:
-            self.neighbors.append(grid[i + 1][j - 1])
+            self.neighbors.append([ground[i + 1][j - 1], creatures[i + 1][j - 1]])
         if i > 0 and j < ROWS - 1:
-            self.neighbors.append(grid[i - 1][j + 1])
+            self.neighbors.append([ground[i - 1][j + 1], creatures[i - 1][j + 1]])
         if i < COLS - 1 and j < ROWS - 1:
-            self.neighbors.append(grid[i + 1][j + 1])
+            self.neighbors.append([ground[i + 1][j + 1], creatures[i + 1][j + 1]])
 
     def update_neighbors(self):
         self.add_neighbors()
         for neighbor in self.neighbors:
-            neighbor.add_neighbors()
+            neighbor[0].add_neighbors()
+            neighbor[1].add_neighbors()
 
     def draw(self):
         pass

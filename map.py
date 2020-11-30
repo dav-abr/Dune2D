@@ -13,14 +13,20 @@ def create_ground(col, row, sc, map):
 
 
 class Map:
-    def __init__(self, cell_size, sc, grid=[]):
+    def __init__(self, cell_size, sc, ground=[], creatures=[]):
         self.cell_size = cell_size
         self.sc = sc
+        self.creatures = creatures
 
-        if grid:
-            self.grid = grid
+        if len(ground) > 0:
+            self.ground = ground
         else:
-            self.grid = [[create_ground(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
+            self.ground = [[create_ground(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
+
+        if len(creatures) > 0:
+            self.creatures = creatures
+        else:
+            self.creatures = [[Cell(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
 
     def drawGrid(self):
         for x in range(COLS):
@@ -30,5 +36,3 @@ class Map:
 
     def draw(self):
         self.sc.fill((166, 130, 66))
-
-        self.drawGrid()
