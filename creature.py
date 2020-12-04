@@ -13,12 +13,15 @@ class Creature(Cell):
         self.goto_path = []
         self.direction = 90
         self.target = False
+        self.ready_for_update_neighbors = True
+        self.hp = 0
+        self.max_hp = 0
 
     def accept_position(self):
         self.open_set = [self.world_map.ground[self.i][self.j]]
         self.closed_set = []
         self.goto_path = []
-        self.add_neighbors()
+        self.update_neighbors()
 
     def go_to(self, end):
         self.accept_position()
@@ -35,7 +38,6 @@ class Creature(Cell):
             current = self.open_set[winner]
 
             if current == end:
-                print('Done')
                 break
 
             self.open_set.remove(current)
@@ -107,56 +109,71 @@ class Creature(Cell):
             else:
                 self.direction = (self.direction - 11.25) % 360
 
+    def rotate_to_next(self):
+        next = self.goto_path[0]
+
+        if next.i < self.i and next.j > self.j and self.direction != 135:
+            self.rotate(135)
+            return False
+        elif next.i < self.i and self.j == next.j and self.direction != 90:
+            self.rotate(90)
+            return False
+        elif next.i < self.i and next.j < self.j and self.direction != 45:
+            self.rotate(45)
+            return False
+        elif self.i == next.i and next.j < self.j and self.direction != 0:
+            self.rotate(0)
+            return False
+        elif next.i > self.i and next.j < self.j and self.direction != 315:
+            self.rotate(315)
+            return False
+        elif next.i > self.i and self.j == next.j and self.direction != 270:
+            self.rotate(270)
+            return False
+        elif next.i > self.i and next.j > self.j and self.direction != 225:
+            self.rotate(225)
+            return False
+        elif self.i == next.i and next.j > self.j and self.direction != 180:
+            self.rotate(180)
+            return False
+        else:
+            return True
+
     def move(self):
-        if len(self.goto_path):
-            next = self.goto_path[0]
-            end = self.goto_path[-1]
+        next = self.goto_path[0]
+        next_creature = self.world_map.creatures[next.i][next.j]
+        end = self.goto_path[-1]
 
-            if next.i < self.i and next.j > self.j and self.direction != 135:
-                self.rotate(135)
-                return
-            if next.i < self.i and self.j == next.j and self.direction != 90:
-                self.rotate(90)
-                return
-            if next.i < self.i and next.j < self.j and self.direction != 45:
-                self.rotate(45)
-                return
-            if self.i == next.i and next.j < self.j and self.direction != 0:
-                self.rotate(0)
-                return
-            if next.i > self.i and next.j < self.j and self.direction != 315:
-                self.rotate(315)
-                return
-            if next.i > self.i and self.j == next.j and self.direction != 270:
-                self.rotate(270)
-                return
-            if next.i > self.i and next.j > self.j and self.direction != 225:
-                self.rotate(225)
-                return
-            if self.i == next.i and next.j > self.j and self.direction != 180:
-                self.rotate(180)
-                return
+        if (isinstance(next_creature, Creature) or isinstance(next, Creature)) and next_creature != self:
+            if next == end:
+                self.accept_position()
+            else:
+                self.go_to(end)
+            return
 
-            if not self.x == next.x:
-                self.x += -get_sign(self.x - next.x) * CELL_SIZE // 8
-            if not self.y == next.y:
-                self.y += -get_sign(self.y - next.y) * CELL_SIZE // 8
-
-            if self.x == next.x and self.y == next.y:
-                print('akjsdhhjkaskjhd')
-                self.goto_path.pop(0)
-                self.update_neighbors()
-                return
-
-            self.world_map.creatures[self.i][self.j] = Cell(self.i, self.j, self.sc, self.world_map)
-            self.world_map.ground[self.i][self.j].add_neighbors()
+        if self.i != next.i or self.j != next.j:
+            new_cell = Cell(self.i, self.j, self.sc, self.world_map)
+            self.world_map.creatures[self.i][self.j] = new_cell
             self.world_map.creatures[next.i][next.j] = self
             self.i = next.i
             self.j = next.j
+            new_cell.update_neighbors()
+            self.update_neighbors()
 
-            if self.x == end.x and self.y == end.y:
-                self.accept_position()
+        if self.x == end.x and self.y == end.y:
+            self.accept_position()
+
+        if self.x == next.x and self.y == next.y and len(self.goto_path) > 0:
+            self.ready_for_update_neighbors = True
+            self.goto_path.pop(0)
+
+        if not self.x == next.x:
+            self.x += get_sign(next.x - self.x) * CELL_SIZE / 8
+        if not self.y == next.y:
+            self.y += get_sign(next.y - self.y) * CELL_SIZE / 8
 
     def draw(self):
-        self.move()
+        if len(self.goto_path):
+            if self.rotate_to_next():
+                self.move()
 

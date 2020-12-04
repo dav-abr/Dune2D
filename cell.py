@@ -1,3 +1,4 @@
+import pygame as pg
 from settings import *
 
 
@@ -18,7 +19,13 @@ class Cell:
         self.previous = None
 
     def __str__(self):
-        return '{0} {1}'.format(self.i, self.j)
+        return '{0} {1} {2}'.format(self.i, self.j, type(self).__name__)
+
+    def __repr__(self):
+        return '{0} {1} {2}'.format(self.i, self.j, type(self).__name__)
+
+    def fill(self):
+        self.isFilled = True
 
     def add_neighbors(self):
         ground = self.world_map.ground

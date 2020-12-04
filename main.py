@@ -3,16 +3,19 @@ from tank import Tank
 from settings import *
 from map import Map
 from wall import Wall
+from hud import Hud
 
 pg.init()
+pg.font.init()
 sc = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pg.time.Clock()
 
 world_map = Map(CELL_SIZE, sc)
-
 world_map.creatures[3][3] = Tank(3, 3, sc, world_map)
 world_map.creatures[4][4] = Tank(4, 4, sc, world_map)
 world_map.ground[5][5] = Wall(5, 5, sc, world_map)
+
+hud = Hud(sc)
 
 for col in range(COLS):
     for row in range(ROWS):
@@ -29,10 +32,12 @@ def get_click_mouse_pos():
     if click[0]:
         if world_map.creatures[grid_x][grid_y] and world_map.creatures[grid_x][grid_y].tank:
             target = world_map.creatures[grid_x][grid_y]
+            hud.target = target
             target.target = True
         elif target and not world_map.ground[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
             target.go_to(world_map.ground[grid_x][grid_y])
             target.target = False
+            hud.target = None
             target = None
         # elif not target:
         #     world_map.ground[grid_x][grid_y] = Wall(grid_x, grid_y, sc, world_map)
@@ -45,10 +50,12 @@ while True:
 
     get_click_mouse_pos()
 
-    for e in pg.event.get():
-        if e.type == pg.MOUSEBUTTONDOWN:
-            if e.button == 4: CELL_SIZE += 1
-            if e.button == 5: CELL_SIZE -= 1
+    # for e in pg.event.get():
+    #     if e.type == pg.MOUSEBUTTONDOWN:
+    #         if e.button == 4:
+    #             CELL_SIZE += 1
+    #         if e.button == 5:
+    #             CELL_SIZE -= 1
 
     for col in range(COLS):
         for row in range(ROWS):
@@ -58,6 +65,8 @@ while True:
         for row in range(ROWS):
             if world_map.creatures[col][row]:
                 world_map.creatures[col][row].draw()
+
+    hud.draw()
 
     clock.tick(FPS)
     pg.display.flip()

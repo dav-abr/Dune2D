@@ -2,31 +2,34 @@ import pygame as pg
 import math
 from creature import Creature
 from settings import *
-from helpers import load_image
+from helpers import load_sprite
 
 class Tank(Creature):
     def __init__(self, i, j, sc, world_map):
         super().__init__(i, j, sc, world_map)
         self.tank = True
         self.sprites = {
-            'straight_up': load_image('./sprites/moto_straight_up.png'),
-            'straight_right': load_image('./sprites/moto_straight_right.png'),
-            'straight_down': load_image('./sprites/moto_straight_down.png'),
-            'straight_left': load_image('./sprites/moto_straight_left.png'),
-            'diagonal_up_right': load_image('./sprites/moto_diagonal_up_right.png'),
-            'diagonal_down_right': load_image('./sprites/moto_diagonal_down_right.png'),
-            'diagonal_down_left': load_image('./sprites/moto_diagonal_down_left.png'),
-            'diagonal_up_left': load_image('./sprites/moto_diagonal_up_left.png'),
-            'horizontal_left_down': load_image('./sprites/moto_angle_horizontal_left_down.png'),
-            'horizontal_right_down': load_image('./sprites/moto_angle_horizontal_right_down.png'),
-            'horizontal_left_up': load_image('./sprites/moto_angle_horizontal_left_up.png'),
-            'horizontal_right_up': load_image('./sprites/moto_angle_horizontal_right_up.png'),
-            'vertical_down_left': load_image('./sprites/moto_angle_vertical_down_left.png'),
-            'vertical_down_right': load_image('./sprites/moto_angle_vertical_down_right.png'),
-            'vertical_up_right': load_image('./sprites/moto_angle_vertical_up_right.png'),
-            'vertical_up_left': load_image('./sprites/moto_angle_vertical_up_left.png'),
+            'straight_up': load_sprite('./sprites/moto_straight_up.png'),
+            'straight_right': load_sprite('./sprites/moto_straight_right.png'),
+            'straight_down': load_sprite('./sprites/moto_straight_down.png'),
+            'straight_left': load_sprite('./sprites/moto_straight_left.png'),
+            'diagonal_up_right': load_sprite('./sprites/moto_diagonal_up_right.png'),
+            'diagonal_down_right': load_sprite('./sprites/moto_diagonal_down_right.png'),
+            'diagonal_down_left': load_sprite('./sprites/moto_diagonal_down_left.png'),
+            'diagonal_up_left': load_sprite('./sprites/moto_diagonal_up_left.png'),
+            'horizontal_left_down': load_sprite('./sprites/moto_angle_horizontal_left_down.png'),
+            'horizontal_right_down': load_sprite('./sprites/moto_angle_horizontal_right_down.png'),
+            'horizontal_left_up': load_sprite('./sprites/moto_angle_horizontal_left_up.png'),
+            'horizontal_right_up': load_sprite('./sprites/moto_angle_horizontal_right_up.png'),
+            'vertical_down_left': load_sprite('./sprites/moto_angle_vertical_down_left.png'),
+            'vertical_down_right': load_sprite('./sprites/moto_angle_vertical_down_right.png'),
+            'vertical_up_right': load_sprite('./sprites/moto_angle_vertical_up_right.png'),
+            'vertical_up_left': load_sprite('./sprites/moto_angle_vertical_up_left.png'),
         }
         self.last_sprite = self.sprites['straight_left']
+
+        self.hp = 50
+        self.max_hp = 100
 
     def draw(self):
         super().draw()
