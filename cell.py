@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import window
 
 
 class Cell:
@@ -8,8 +9,8 @@ class Cell:
         self.j = j
         self.sc = sc
         self.world_map = world_map
-        self.x = i * CELL_SIZE
-        self.y = j * CELL_SIZE
+        self.x = i * window.cell_size
+        self.y = j * window.cell_size
         self.f = 0
         self.g = 0
         self.h = 0
@@ -17,6 +18,7 @@ class Cell:
         self.tank = False
         self.neighbors = []
         self.previous = None
+        self.sprite = None
 
     def __str__(self):
         return '{0} {1} {2}'.format(self.i, self.j, type(self).__name__)
@@ -57,4 +59,12 @@ class Cell:
             neighbor[1].add_neighbors()
 
     def draw(self):
-        pass
+        # self.x = self.i * window.cell_size
+        # self.y = self.j * window.cell_size
+        if self.sprite:
+            # if self.sprite.get_width() != window.cell_size or self.sprite.get_height() != window.cell_size:
+            #     print(self.sprite.get_width(), window.cell_size)
+            #     self.sprite = pg.transform.scale(self.sprite, (window.cell_size, window.cell_size))
+            self.sc.blit(self.sprite, (self.x + window.absolute_x, self.y + window.absolute_y, window.cell_size, window.cell_size))
+        # else:
+        #     pg.draw.rect(self.sc, pg.Color('black'), (self.x + window.absolute_x, self.y + window.absolute_y, window.cell_size, window.cell_size))

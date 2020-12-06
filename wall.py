@@ -10,4 +10,4 @@ class Wall(Cell):
 
     def draw(self):
         pg.draw.rect(self.sc, pg.Color('blue'),
-                     pg.Rect(self.i * CELL_SIZE, self.j * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+                     pg.Rect(self.i * window.cell_size, self.j * window.cell_size, window.cell_size, window.cell_size))

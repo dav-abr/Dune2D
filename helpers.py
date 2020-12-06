@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import window
 
 
 def heuristic(a, b):
@@ -12,4 +13,4 @@ def get_sign(num):
 
 def load_sprite(path):
     img = pg.image.load(path)
-    return pg.transform.scale(img, (CELL_SIZE, CELL_SIZE))
+    return pg.transform.scale(img, (window.cell_size, window.cell_size))

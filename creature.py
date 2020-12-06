@@ -2,6 +2,7 @@ from cell import Cell
 from wall import Wall
 from settings import *
 from helpers import heuristic, get_sign
+import window
 
 
 class Creature(Cell):
@@ -168,11 +169,13 @@ class Creature(Cell):
             self.goto_path.pop(0)
 
         if not self.x == next.x:
-            self.x += get_sign(next.x - self.x) * CELL_SIZE / 8
+            self.x += get_sign(next.x - self.x) * window.cell_size / 8
+            print(window.cell_size / 8, get_sign(next.x - self.x) * window.cell_size / 8)
         if not self.y == next.y:
-            self.y += get_sign(next.y - self.y) * CELL_SIZE / 8
+            self.y += get_sign(next.y - self.y) * window.cell_size / 8
 
     def draw(self):
+        super().draw()
         if len(self.goto_path):
             if self.rotate_to_next():
                 self.move()

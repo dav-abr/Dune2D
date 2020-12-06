@@ -2,6 +2,7 @@ import pygame as pg
 from settings import *
 from cell import Cell
 from ground import Ground
+import window
 
 
 def create_cell(col, row, sc, map):
@@ -13,8 +14,7 @@ def create_ground(col, row, sc, map):
 
 
 class Map:
-    def __init__(self, cell_size, sc, ground=[], creatures=[]):
-        self.cell_size = cell_size
+    def __init__(self, sc, ground=[], creatures=[]):
         self.sc = sc
         self.creatures = creatures
 
@@ -28,11 +28,11 @@ class Map:
         else:
             self.creatures = [[Cell(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
 
-    def drawGrid(self):
-        for x in range(COLS):
-            for y in range(ROWS):
-                rect = pg.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-                pg.draw.rect(self.sc, pg.Color('white'), rect, 1)
+    # def drawGrid(self):
+    #     for x in range(COLS):
+    #         for y in range(ROWS):
+    #             rect = pg.Rect(x * window.cell_size, y * window.cell_size, window.cell_size, window.cell_size)
+    #             pg.draw.rect(self.sc, pg.Color('white'), rect, 1)
 
     def draw(self):
         self.sc.fill((166, 130, 66))

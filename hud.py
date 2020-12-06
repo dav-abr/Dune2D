@@ -2,6 +2,7 @@ import pygame as pg
 from tank import Tank
 from helpers import load_sprite
 from settings import *
+import window
 
 
 class Hud:
@@ -40,8 +41,8 @@ class Hud:
                     hp_color = '#E8A300'
 
                 if self.target_select_delay_counter % (FPS / 2) < FPS / 4:
-                    self.sc.blit(target_select, (self.target.x, self.target.y, CELL_SIZE, CELL_SIZE))
+                    self.sc.blit(target_select, (self.target.x + window.absolute_x, self.target.y + window.absolute_y, window.cell_size, window.cell_size))
 
-                self.sc.blit(target_image, (*image_position, CELL_SIZE, CELL_SIZE))
+                self.sc.blit(target_image, (*image_position, window.cell_size, window.cell_size))
                 pg.draw.rect(self.sc, pg.Color(hp_color), (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15))
                 pg.draw.rect(self.sc, pg.Color('black'), (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15), 3)
