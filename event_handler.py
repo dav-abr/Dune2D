@@ -1,7 +1,9 @@
 import pygame as pg
+from random import randint
 import window
 from biulding import Building
 from tank import Tank
+from settings import *
 
 
 class EventHandler:
@@ -16,8 +18,8 @@ class EventHandler:
         grid_x, grid_y = (x - window.absolute_x) // window.cell_size, (y - window.absolute_y) // window.cell_size
         click = pg.mouse.get_pressed()
         if click[0]:
-            # for col in range(COLS):
-            #     world_map.creatures[col][0].go_to(world_map.ground[col][ROWS - 1])
+            for col in range(COLS):
+                self.world_map.creatures[col][0].go_to(self.world_map.ground[randint(0, COLS - 1)][randint(0, ROWS - 1)])
             if self.world_map.creatures[grid_x][grid_y] and isinstance(self.world_map.creatures[grid_x][grid_y], Tank):
                 self.target = self.world_map.creatures[grid_x][grid_y]
                 self.hud.target = self.target
@@ -38,13 +40,13 @@ class EventHandler:
         if keyinput[pg.K_LEFT]:
             if window.absolute_dx < 0:
                 window.absolute_dx = 0
-            if window.absolute_dx < 15:
+            if window.absolute_dx < 30:
                 window.absolute_dx += 1
             window.absolute_x += window.absolute_dx
         elif keyinput[pg.K_RIGHT]:
             if window.absolute_dx > 0:
                 window.absolute_dx = 0
-            if window.absolute_dx > -15:
+            if window.absolute_dx > -30:
                 window.absolute_dx -= 1
             window.absolute_x += window.absolute_dx
         else:
@@ -53,13 +55,13 @@ class EventHandler:
         if keyinput[pg.K_UP]:
             if window.absolute_dy < 0:
                 window.absolute_dy = 0
-            if window.absolute_dy < 15:
+            if window.absolute_dy < 30:
                 window.absolute_dy += 1
             window.absolute_y += window.absolute_dy
         elif keyinput[pg.K_DOWN]:
             if window.absolute_dy > 0:
                 window.absolute_dy = 0
-            if window.absolute_dy > -15:
+            if window.absolute_dy > -30:
                 window.absolute_dy -= 1
             window.absolute_y += window.absolute_dy
         else:

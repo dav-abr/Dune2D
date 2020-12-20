@@ -2,10 +2,21 @@ import pygame as pg
 
 from biulding import Building
 from creature import Creature
+from ground import Ground
 from helpers import load_sprite
 from settings import *
 import window
 
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
 
 class Hud:
     __instance = None
@@ -34,6 +45,8 @@ class Hud:
                 load_sprite('./hud/building_place_accept.png'),
                 load_sprite('./hud/building_place_not_accept.png')
             ]
+            self.minimap = []
+            self.minimap_update = 0
 
             Hud.__instance = self
         else:
@@ -132,3 +145,40 @@ class Hud:
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15))
             pg.draw.rect(self.sc, pg.Color('black'),
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15), 3)
+
+        minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + 500]
+        minimap_cell_size = 200 // COLS
+        mouse_x, mouse_y = pg.mouse.get_pos()
+
+        pg.draw.rect(self.sc, pg.Color('blue'),
+                     (*minimap_position, 200, 200), 3)
+
+        for col in range(COLS):
+            for row in range(ROWS):
+                color = 'black'
+
+                if isinstance(self.world_map.creatures[col][row], Creature):
+                    color = 'blue'
+                elif isinstance(self.world_map.buildings[col][row], Building):
+                    color = 'blue'
+                elif isinstance(self.world_map.ground[col][row], Ground):
+                    color = 'grey'
+                pg.draw.rect(self.sc, pg.Color(color),
+                             (
+                                 minimap_position[0] + minimap_cell_size * col,
+                                 minimap_position[1] + minimap_cell_size * row,
+                                 minimap_cell_size,
+                                 minimap_cell_size
+                             ),
+                             0
+                            )
+
+        pg.draw.rect(self.sc, pg.Color('red'),
+                     (
+                         minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0, minimap_cell_size * COLS) - minimap_cell_size // 2,
+                         minimap_position[1] + translate(mouse_y - window.absolute_y, 0, CELL_SIZE * ROWS, 0, minimap_cell_size * ROWS) - minimap_cell_size // 2,
+                         minimap_cell_size,
+                         minimap_cell_size
+                     ),
+                     0
+                     )
