@@ -1,3 +1,4 @@
+from biulding import Building
 from cell import Cell
 from wall import Wall
 from settings import *
@@ -13,7 +14,6 @@ class Creature(Cell):
         self.closed_set = []
         self.goto_path = []
         self.direction = 90
-        self.target = False
         self.ready_for_update_neighbors = True
         self.hp = 0
         self.max_hp = 0
@@ -52,7 +52,8 @@ class Creature(Cell):
 
                 if (ground_neighbor not in self.closed_set) and\
                    not isinstance(neighbor[0], Wall) and\
-                   not isinstance(neighbor[1], Creature):
+                   not isinstance(neighbor[1], Creature) and \
+                   not isinstance(neighbor[2], Building):
                     tempG = current.g + ground_neighbor.g
 
                     if ground_neighbor in self.open_set:
@@ -170,7 +171,6 @@ class Creature(Cell):
 
         if not self.x == next.x:
             self.x += get_sign(next.x - self.x) * window.cell_size / 8
-            print(window.cell_size / 8, get_sign(next.x - self.x) * window.cell_size / 8)
         if not self.y == next.y:
             self.y += get_sign(next.y - self.y) * window.cell_size / 8
 

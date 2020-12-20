@@ -5,10 +5,10 @@ from settings import *
 from helpers import load_sprite
 import window
 
+
 class Tank(Creature):
     def __init__(self, i, j, sc, world_map):
         super().__init__(i, j, sc, world_map)
-        self.tank = True
         self.sprites = {
             'straight_up': load_sprite('./sprites/moto_straight_up.png'),
             'straight_right': load_sprite('./sprites/moto_straight_right.png'),
@@ -28,8 +28,9 @@ class Tank(Creature):
             'vertical_up_left': load_sprite('./sprites/moto_angle_vertical_up_left.png'),
         }
         self.sprite = self.sprites['straight_left']
+        self.hud_image = pg.image.load('./hud/moto.png')
 
-        self.hp = 50
+        self.hp = 10
         self.max_hp = 100
 
     def draw(self):

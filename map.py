@@ -14,7 +14,7 @@ def create_ground(col, row, sc, map):
 
 
 class Map:
-    def __init__(self, sc, ground=[], creatures=[]):
+    def __init__(self, sc, ground=[], creatures=[], buildings=[]):
         self.sc = sc
         self.creatures = creatures
 
@@ -27,6 +27,11 @@ class Map:
             self.creatures = creatures
         else:
             self.creatures = [[Cell(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
+
+        if len(buildings) > 0:
+            self.buildings = buildings
+        else:
+            self.buildings = [[Cell(col, row, sc, self) for row in range(ROWS)] for col in range(COLS)]
 
     # def drawGrid(self):
     #     for x in range(COLS):

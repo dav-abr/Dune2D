@@ -1,4 +1,7 @@
 import pygame as pg
+
+from biulding import Building
+from event_handler import EventHandler
 from tank import Tank
 from settings import *
 from map import Map
@@ -18,8 +21,12 @@ world_map = Map(sc)
 for col in range(COLS):
     world_map.creatures[col][0] = Tank(col, 0, sc, world_map)
 
+world_map.buildings[5][5] = Building(5, 5, sc, world_map, 'windtrap')
+world_map.buildings[7][7] = Building(7, 7, sc, world_map, 'construction_yard')
 
-hud = Hud(sc)
+hud = Hud(sc, world_map)
+
+event_handler = EventHandler(world_map, hud)
 
 for col in range(COLS):
     for row in range(ROWS):
@@ -68,13 +75,16 @@ def get_click_mouse_pos():
     if click[0]:
         # for col in range(COLS):
         #     world_map.creatures[col][0].go_to(world_map.ground[col][ROWS - 1])
-        if world_map.creatures[grid_x][grid_y] and world_map.creatures[grid_x][grid_y].tank:
+        if world_map.creatures[grid_x][grid_y] and isinstance(world_map.creatures[grid_x][grid_y], Tank):
             target = world_map.creatures[grid_x][grid_y]
             hud.target = target
-            target.target = True
-        elif target and not world_map.ground[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
+        elif world_map.buildings[grid_x][grid_y] and isinstance(world_map.buildings[grid_x][grid_y], Building):
+            target = world_map.buildings[grid_x][grid_y]
+            if target.name == 'construction_yard':
+                hud.building_placement = (Building, 'windtrap')
+            hud.target = target
+        elif target and isinstance(target, Tank) and not world_map.ground[grid_x][grid_y].wall and (not target.x == grid_x) and (not target.y == grid_y):
             target.go_to(world_map.ground[grid_x][grid_y])
-            target.target = False
             hud.target = None
             target = None
     return (grid_x, grid_y) if click[0] else False
@@ -83,12 +93,16 @@ def get_click_mouse_pos():
 while True:
     world_map.draw()
 
-    get_click_mouse_pos()
-    handle_key_press()
+    event_handler.draw()
 
     for col in range(COLS):
         for row in range(ROWS):
             world_map.ground[col][row].draw()
+
+    for col in range(COLS):
+        for row in range(ROWS):
+            if world_map.buildings[col][row]:
+                world_map.buildings[col][row].draw()
 
     for col in range(COLS):
         for row in range(ROWS):
