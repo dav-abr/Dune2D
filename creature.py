@@ -6,9 +6,17 @@ from helpers import heuristic, get_sign
 import window
 
 
+def update(func):
+    def wrapped(*args, **kwargs):
+        func(*args, **kwargs)
+        args[0].world_map.update_creatures_sf()
+    return wrapped
+
+
 class Creature(Cell):
-    def __init__(self, i, j, sc, world_map):
-        super().__init__(i, j, sc, world_map)
+    def __init__(self, i, j, world_map):
+        super().__init__(i, j, world_map)
+        self.sc = world_map.creatures_sf
         self.previous = None
         self.open_set = [self.world_map.ground[self.i][self.j]]
         self.closed_set = []
@@ -17,6 +25,7 @@ class Creature(Cell):
         self.ready_for_update_neighbors = True
         self.hp = 0
         self.max_hp = 0
+        self.world_map.update_creatures_sf()
 
     def accept_position(self):
         self.open_set = [self.world_map.ground[self.i][self.j]]
@@ -91,6 +100,7 @@ class Creature(Cell):
         path.reverse()
         self.goto_path = path[:-1]
 
+    @update
     def rotate(self, to):
         self.direction = (self.direction + 360) % 360
 
@@ -141,6 +151,7 @@ class Creature(Cell):
         else:
             return True
 
+    @update
     def move(self):
         next = self.goto_path[0]
         next_creature = self.world_map.creatures[next.i][next.j]
@@ -154,7 +165,7 @@ class Creature(Cell):
             return
 
         if self.i != next.i or self.j != next.j:
-            new_cell = Cell(self.i, self.j, self.sc, self.world_map)
+            new_cell = Cell(self.i, self.j, self.world_map)
             self.world_map.creatures[self.i][self.j] = new_cell
             self.world_map.creatures[next.i][next.j] = self
             self.i = next.i

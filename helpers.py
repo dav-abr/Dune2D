@@ -13,7 +13,9 @@ def get_sign(num):
 
 def load_sprite(path):
     img = pg.image.load(path)
+    img = img.convert_alpha()
     return pg.transform.scale(img, (window.cell_size, window.cell_size))
+    # return img
 
 
 def load_building_sprite(path, width, height):

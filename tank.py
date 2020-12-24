@@ -1,32 +1,13 @@
 import pygame as pg
-import math
 from creature import Creature
-from settings import *
 from helpers import load_sprite
-import window
+import sprites
 
 
 class Tank(Creature):
-    def __init__(self, i, j, sc, world_map):
-        super().__init__(i, j, sc, world_map)
-        self.sprites = {
-            'straight_up': load_sprite('./sprites/moto_straight_up.png'),
-            'straight_right': load_sprite('./sprites/moto_straight_right.png'),
-            'straight_down': load_sprite('./sprites/moto_straight_down.png'),
-            'straight_left': load_sprite('./sprites/moto_straight_left.png'),
-            'diagonal_up_right': load_sprite('./sprites/moto_diagonal_up_right.png'),
-            'diagonal_down_right': load_sprite('./sprites/moto_diagonal_down_right.png'),
-            'diagonal_down_left': load_sprite('./sprites/moto_diagonal_down_left.png'),
-            'diagonal_up_left': load_sprite('./sprites/moto_diagonal_up_left.png'),
-            'horizontal_left_down': load_sprite('./sprites/moto_angle_horizontal_left_down.png'),
-            'horizontal_right_down': load_sprite('./sprites/moto_angle_horizontal_right_down.png'),
-            'horizontal_left_up': load_sprite('./sprites/moto_angle_horizontal_left_up.png'),
-            'horizontal_right_up': load_sprite('./sprites/moto_angle_horizontal_right_up.png'),
-            'vertical_down_left': load_sprite('./sprites/moto_angle_vertical_down_left.png'),
-            'vertical_down_right': load_sprite('./sprites/moto_angle_vertical_down_right.png'),
-            'vertical_up_right': load_sprite('./sprites/moto_angle_vertical_up_right.png'),
-            'vertical_up_left': load_sprite('./sprites/moto_angle_vertical_up_left.png'),
-        }
+    def __init__(self, i, j, world_map):
+        super().__init__(i, j, world_map)
+        self.sprites = sprites.sprites['creatures']['tank']
         self.sprite = self.sprites['straight_left']
         self.hud_image = pg.image.load('./hud/moto.png')
 

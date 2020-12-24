@@ -17,9 +17,23 @@ class EventHandler:
         x, y = pg.mouse.get_pos()
         grid_x, grid_y = (x - window.absolute_x) // window.cell_size, (y - window.absolute_y) // window.cell_size
         click = pg.mouse.get_pressed()
+
         if click[0]:
-            for col in range(COLS):
-                self.world_map.creatures[col][0].go_to(self.world_map.ground[randint(0, COLS - 1)][randint(0, ROWS - 1)])
+            # for col in range(COLS):
+            #     self.world_map.creatures[col][0].go_to(self.world_map.ground[randint(0, COLS - 1)][randint(0, ROWS - 1)])
+            if self.building_placement and self.hud.can_place:
+                self.world_map.buildings[grid_x][grid_y] = Building(grid_x, grid_y, self.world_map, self.building_placement)
+                self.target = None
+                self.building_placement = None
+                self.hud.building_placement = None
+
+            if self.target:
+                if isinstance(self.target, Tank) and not self.world_map.ground[grid_x][grid_y].wall and self.target.x != grid_x and self.target.y != grid_y:
+                    self.target.go_to(self.world_map.ground[grid_x][grid_y])
+                    self.hud.target = None
+                    self.target = None
+                # elif isinstance(self.target, Building):
+                #     pass
             if self.world_map.creatures[grid_x][grid_y] and isinstance(self.world_map.creatures[grid_x][grid_y], Tank):
                 self.target = self.world_map.creatures[grid_x][grid_y]
                 self.hud.target = self.target
@@ -29,11 +43,6 @@ class EventHandler:
                     self.hud.building_placement = (Building, 'windtrap')
                     self.building_placement = 'windtrap'
                 self.hud.target = self.target
-            elif self.target and isinstance(self.target, Tank) and not self.world_map.ground[grid_x][grid_y].wall and (not self.target.x == grid_x) and (not self.target.y == grid_y):
-                print('kajshd')
-                self.target.go_to(self.world_map.ground[grid_x][grid_y])
-                self.hud.target = None
-                self.target = None
 
         keyinput = pg.key.get_pressed()
 

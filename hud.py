@@ -1,5 +1,5 @@
 import pygame as pg
-
+import time
 from biulding import Building
 from creature import Creature
 from ground import Ground
@@ -30,9 +30,12 @@ class Hud:
     def __init__(self, sc, world_map):
         if Hud.__instance is None:
             self.sc = sc
+            self.sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
+            self.minimap_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
             self.world_map = world_map
             self.target = None
             self.building_placement = None
+            self.can_place = None
             self.target_select_delay_counter = 0
             self.creature_select = load_sprite('./hud/creature_select.png')
             self.building_select = [
@@ -47,6 +50,7 @@ class Hud:
             ]
             self.minimap = []
             self.minimap_update = 0
+            self.minimap_last_update = time.time()
 
             Hud.__instance = self
         else:
@@ -64,6 +68,8 @@ class Hud:
             self.target_select_delay_counter = 0
 
     def draw(self):
+        self.sf.fill(pg.Color(0, 0, 0, 0))
+
         if self.target:
             target_image = self.target.hud_image
             image_position = [WINDOW_WIDTH - target_image.get_rect().size[0] - 48, 168]
@@ -83,31 +89,31 @@ class Hud:
             if self.building_placement:
                 x, y = pg.mouse.get_pos()
                 grid_x, grid_y = (x - window.absolute_x) // window.cell_size, (y - window.absolute_y) // window.cell_size
-                can_place = True
+                self.can_place = True
 
                 for i in range(2):
                     for j in range(2):
                         if isinstance(self.world_map.buildings[grid_x + i][grid_y + j], Building) or isinstance(self.world_map.creatures[grid_x + i][grid_y + j], Creature):
-                            can_place = False
+                            self.can_place = False
 
                 for i in range(2):
                     for j in range(2):
-                        self.sc.blit(self.building_place[0] if can_place else self.building_place[1], (
-                            window.cell_size * grid_x + i * window.cell_size,
-                            window.cell_size * grid_y + j * window.cell_size,
+                        self.sf.blit(self.building_place[0] if self.can_place else self.building_place[1], (
+                            window.cell_size * grid_x + i * window.cell_size + window.absolute_x,
+                            window.cell_size * grid_y + j * window.cell_size + window.absolute_y,
                             window.cell_size,
                             window.cell_size
                         ))
             else:
                 if isinstance(self.target, Creature):
                     if self.target_select_delay_counter % (FPS / 2) < FPS / 4:
-                        self.sc.blit(self.creature_select, (
+                        self.sf.blit(self.creature_select, (
                             self.target.x + window.absolute_x, self.target.y + window.absolute_y, window.cell_size,
                             window.cell_size))
 
                 if isinstance(self.target, Building):
                     if self.target_select_delay_counter % (FPS / 2) < FPS / 4:
-                        self.sc.blit(
+                        self.sf.blit(
                             self.building_select[0], (
                                 self.target.x + window.absolute_x,
                                 self.target.y + window.absolute_y,
@@ -115,7 +121,7 @@ class Hud:
                                 window.cell_size
                             )
                         )
-                        self.sc.blit(
+                        self.sf.blit(
                             self.building_select[1], (
                                 self.target.x + window.absolute_x + window.cell_size * (self.target.width - 1),
                                 self.target.y + window.absolute_y,
@@ -123,7 +129,7 @@ class Hud:
                                 window.cell_size
                             )
                         )
-                        self.sc.blit(
+                        self.sf.blit(
                             self.building_select[2], (
                                 self.target.x + window.absolute_x + window.cell_size * (self.target.width - 1),
                                 self.target.y + window.absolute_y + window.cell_size * (self.target.height - 1),
@@ -131,7 +137,7 @@ class Hud:
                                 window.cell_size
                             )
                         )
-                        self.sc.blit(
+                        self.sf.blit(
                             self.building_select[3], (
                                 self.target.x + window.absolute_x,
                                 self.target.y + window.absolute_y + window.cell_size * (self.target.height - 1),
@@ -140,45 +146,52 @@ class Hud:
                             )
                         )
 
-            self.sc.blit(target_image, (*image_position, window.cell_size, window.cell_size))
-            pg.draw.rect(self.sc, pg.Color(hp_color),
+            self.sf.blit(target_image, (*image_position, window.cell_size, window.cell_size))
+            pg.draw.rect(self.sf, pg.Color(hp_color),
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15))
-            pg.draw.rect(self.sc, pg.Color('black'),
+            pg.draw.rect(self.sf, pg.Color('black'),
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15), 3)
 
         minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + 500]
         minimap_cell_size = 200 // COLS
         mouse_x, mouse_y = pg.mouse.get_pos()
 
-        pg.draw.rect(self.sc, pg.Color('blue'),
+        pg.draw.rect(self.sf, pg.Color('blue'),
                      (*minimap_position, 200, 200), 3)
 
-        for col in range(COLS):
-            for row in range(ROWS):
-                color = 'black'
+        if time.time() - self.minimap_last_update > 0.1:
+            self.minimap_last_update = time.time()
+            for col in range(COLS):
+                for row in range(ROWS):
+                    color = 'black'
 
-                if isinstance(self.world_map.creatures[col][row], Creature):
-                    color = 'blue'
-                elif isinstance(self.world_map.buildings[col][row], Building):
-                    color = 'blue'
-                elif isinstance(self.world_map.ground[col][row], Ground):
-                    color = 'grey'
-                pg.draw.rect(self.sc, pg.Color(color),
-                             (
-                                 minimap_position[0] + minimap_cell_size * col,
-                                 minimap_position[1] + minimap_cell_size * row,
-                                 minimap_cell_size,
-                                 minimap_cell_size
-                             ),
-                             0
-                            )
+                    if isinstance(self.world_map.creatures[col][row], Creature):
+                        color = 'blue'
+                    elif isinstance(self.world_map.buildings[col][row], Building):
+                        color = 'blue'
+                    elif isinstance(self.world_map.ground[col][row], Ground):
+                        color = 'grey'
+                    pg.draw.rect(self.minimap_sf, pg.Color(color),
+                                 (
+                                     minimap_position[0] + minimap_cell_size * col,
+                                     minimap_position[1] + minimap_cell_size * row,
+                                     minimap_cell_size,
+                                     minimap_cell_size
+                                 ),
+                                 0
+                                )
 
-        pg.draw.rect(self.sc, pg.Color('red'),
-                     (
-                         minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0, minimap_cell_size * COLS) - minimap_cell_size // 2,
-                         minimap_position[1] + translate(mouse_y - window.absolute_y, 0, CELL_SIZE * ROWS, 0, minimap_cell_size * ROWS) - minimap_cell_size // 2,
-                         minimap_cell_size,
-                         minimap_cell_size
-                     ),
-                     0
-                     )
+            pg.draw.rect(self.minimap_sf, pg.Color('red'),
+                         (
+                             minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0,
+                                                             minimap_cell_size * COLS) - minimap_cell_size // 2,
+                             minimap_position[1] + translate(mouse_y - window.absolute_y, 0, CELL_SIZE * ROWS, 0,
+                                                             minimap_cell_size * ROWS) - minimap_cell_size // 2,
+                             minimap_cell_size,
+                             minimap_cell_size
+                         ),
+                         0
+                         )
+
+        self.sc.blit(self.sf, (0, 0))
+        self.sc.blit(self.minimap_sf, (0, 0))

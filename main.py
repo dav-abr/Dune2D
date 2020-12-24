@@ -1,11 +1,11 @@
 import pygame as pg
-from biulding import Building
 from event_handler import EventHandler
-from tank import Tank
 from settings import *
 from map import Map
 from hud import Hud
 import window
+import sprites
+from pygame.locals import *
 
 window.init()
 
@@ -13,16 +13,16 @@ target = None
 
 pg.init()
 pg.font.init()
-sc = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+flags = DOUBLEBUF
+sc = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags)
+sc.set_alpha(None)
+sprites.init()
+
 clock = pg.time.Clock()
 
+
 world_map = Map(sc)
-for col in range(COLS):
-    world_map.creatures[col][0] = Tank(col, 0, sc, world_map)
-
-world_map.buildings[5][5] = Building(5, 5, sc, world_map, 'windtrap')
-world_map.buildings[7][7] = Building(7, 7, sc, world_map, 'construction_yard')
-
 hud = Hud(sc, world_map)
 
 event_handler = EventHandler(world_map, hud)
@@ -36,24 +36,12 @@ while True:
 
     event_handler.draw()
 
-    for col in range(COLS):
-        for row in range(ROWS):
-            world_map.ground[col][row].draw()
-
-    for col in range(COLS):
-        for row in range(ROWS):
-            if world_map.buildings[col][row]:
-                world_map.buildings[col][row].draw()
-
-    for col in range(COLS):
-        for row in range(ROWS):
-            if world_map.creatures[col][row]:
-                world_map.creatures[col][row].draw()
-
     hud.draw()
 
     clock.tick(FPS)
     pg.display.flip()
+    fps = str(int(clock.get_fps()))
+    pg.display.set_caption(fps)
 
     for event in pg.event.get():
         if event.type == pg.QUIT:

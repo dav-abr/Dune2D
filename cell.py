@@ -4,10 +4,10 @@ import window
 
 
 class Cell:
-    def __init__(self, i, j, sc, world_map):
+    def __init__(self, i, j, world_map):
         self.i = i
         self.j = j
-        self.sc = sc
+        self.sc = None
         self.world_map = world_map
         self.x = i * window.cell_size
         self.y = j * window.cell_size
@@ -58,13 +58,9 @@ class Cell:
             neighbor[0].add_neighbors()
             neighbor[1].add_neighbors()
 
+    def blit(self):
+        if self.sc and self.sprite:
+            self.sc.blit(self.sprite, (self.x, self.y, window.cell_size, window.cell_size))
+
     def draw(self):
-        # self.x = self.i * window.cell_size
-        # self.y = self.j * window.cell_size
-        if self.sprite:
-            # if self.sprite.get_width() != window.cell_size or self.sprite.get_height() != window.cell_size:
-            #     print(self.sprite.get_width(), window.cell_size)
-            #     self.sprite = pg.transform.scale(self.sprite, (window.cell_size, window.cell_size))
-            self.sc.blit(self.sprite, (self.x + window.absolute_x, self.y + window.absolute_y, window.cell_size, window.cell_size))
-        # else:
-        #     pg.draw.rect(self.sc, pg.Color('black'), (self.x + window.absolute_x, self.y + window.absolute_y, window.cell_size, window.cell_size))
+        pass
