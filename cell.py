@@ -59,6 +59,9 @@ class Cell:
             neighbor[1].add_neighbors()
 
     def blit(self):
+        # and (
+        #                 self.x + window.cell_size > -window.absolute_x and self.x - window.cell_size < -window.absolute_x + WINDOW_WIDTH) and (
+        #                 self.y + window.cell_size > -window.absolute_y and self.y - window.cell_size < -window.absolute_y + WINDOW_HEIGHT)
         if self.sc and self.sprite:
             self.sc.blit(self.sprite, (self.x, self.y, window.cell_size, window.cell_size))
 

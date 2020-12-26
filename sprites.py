@@ -1,4 +1,5 @@
 from helpers import load_sprite, load_building_sprite
+import window
 
 
 def init():
@@ -27,6 +28,14 @@ def init():
         'buildings': {
             'windtrap': load_building_sprite('./houses/{0}.png'.format('windtrap'), 2, 2),
             'construction_yard': load_building_sprite('./houses/{0}.png'.format('construction_yard'), 2, 2),
+            'building_indicator_0': load_sprite('./houses/building_indicator_straight_up.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_90': load_sprite('./houses/building_indicator_straight_right.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_180': load_sprite('./houses/building_indicator_straight_down.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_270': load_sprite('./houses/building_indicator_straight_left.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_45': load_sprite('./houses/building_indicator_angle_up_right.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_135': load_sprite('./houses/building_indicator_angle_down_right.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_225': load_sprite('./houses/building_indicator_angle_down_left.png', window.cell_size / 2 - window.cell_size / 30),
+            'building_indicator_315': load_sprite('./houses/building_indicator_angle_up_left.png', window.cell_size / 2 - window.cell_size / 30)
         },
         'ground': {
             'concrete': load_sprite('./sprites/concrete.png')

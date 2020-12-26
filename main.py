@@ -1,13 +1,15 @@
 import pygame as pg
+import window
+
+window.init()
+
 from event_handler import EventHandler
 from settings import *
 from map import Map
 from hud import Hud
-import window
 import sprites
 from pygame.locals import *
 
-window.init()
 
 target = None
 
