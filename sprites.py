@@ -39,5 +39,9 @@ def init():
         },
         'ground': {
             'concrete': load_sprite('./sprites/concrete.png')
+        },
+        'hud': {
+            'cursor': load_sprite('./hud/cursor.png'),
+            'cursor_selected': load_sprite('./hud/cursor_selected.png'),
         }
     }

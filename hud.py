@@ -6,6 +6,7 @@ from ground import Ground
 from helpers import load_sprite
 from settings import *
 import window
+import sprites
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
@@ -32,6 +33,7 @@ class Hud:
             self.sc = sc
             self.sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
             self.minimap_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
+            self.cursor_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
             self.world_map = world_map
             self.target = None
             self.building_placement = None
@@ -195,3 +197,8 @@ class Hud:
 
         self.sc.blit(self.sf, (0, 0))
         self.sc.blit(self.minimap_sf, (0, 0))
+
+        if not self.building_placement:
+            self.cursor_sf.fill(pg.Color(0, 0, 0, 0))
+            self.cursor_sf.blit(sprites.sprites['hud']['cursor_selected'] if isinstance(self.target, Creature) else sprites.sprites['hud']['cursor'], (mouse_x - window.cell_size / 2, mouse_y - window.cell_size / 2))
+            self.sc.blit(self.cursor_sf, (0, 0))

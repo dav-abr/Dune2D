@@ -15,6 +15,7 @@ target = None
 
 pg.init()
 pg.font.init()
+pg.mouse.set_visible(False)
 
 flags = DOUBLEBUF
 sc = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags)
