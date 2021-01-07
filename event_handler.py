@@ -52,12 +52,16 @@ class EventHandler:
             if window.absolute_dx < 30:
                 window.absolute_dx += 1
             window.absolute_x += window.absolute_dx
+            self.world_map.update_ground_sf()
+            self.world_map.update_buildings_sf()
         elif keyinput[pg.K_RIGHT]:
             if window.absolute_dx > 0:
                 window.absolute_dx = 0
             if window.absolute_dx > -30:
                 window.absolute_dx -= 1
             window.absolute_x += window.absolute_dx
+            self.world_map.update_ground_sf()
+            self.world_map.update_buildings_sf()
         else:
             window.absolute_dx = 0
 
@@ -67,11 +71,15 @@ class EventHandler:
             if window.absolute_dy < 30:
                 window.absolute_dy += 1
             window.absolute_y += window.absolute_dy
+            self.world_map.update_ground_sf()
+            self.world_map.update_buildings_sf()
         elif keyinput[pg.K_DOWN]:
             if window.absolute_dy > 0:
                 window.absolute_dy = 0
             if window.absolute_dy > -30:
                 window.absolute_dy -= 1
             window.absolute_y += window.absolute_dy
+            self.world_map.update_ground_sf()
+            self.world_map.update_buildings_sf()
         else:
             window.absolute_dy = 0

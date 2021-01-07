@@ -1,3 +1,5 @@
+import math
+
 from biulding import Building
 from cell import Cell
 from wall import Wall
@@ -9,7 +11,8 @@ import window
 def update(func):
     def wrapped(*args, **kwargs):
         func(*args, **kwargs)
-        args[0].world_map.update_creatures_sf()
+        # args[0].world_map.update_creatures_sf()
+        args[0].world_map.update_creatures_sfs(args[0])
     return wrapped
 
 
@@ -191,3 +194,7 @@ class Creature(Cell):
             if self.rotate_to_next():
                 self.move()
 
+    def blit(self):
+        chunk_i, chunk_j = math.floor(self.i / CHUNK_SIZE), math.floor(self.j / CHUNK_SIZE)
+        print(chunk_i, chunk_j, 'in creature')
+        self.world_map.creatures_sfs[chunk_i][chunk_j].blit(self.sprite, (0, 0))
