@@ -2,7 +2,7 @@ from biulding import Building
 from cell import Cell
 from wall import Wall
 from settings import *
-from helpers import heuristic, get_sign
+from helpers import heuristic, get_sign, timings
 import window
 
 
@@ -19,6 +19,10 @@ class Creature(Cell):
         self.sc = world_map.creatures_sf
         self.previous = None
         self.open_set = [self.world_map.ground[self.i][self.j]]
+        self.rx = self.x
+        self.ry = self.y
+        self.x_timings = []
+        self.y_timings = []
         self.closed_set = []
         self.goto_path = []
         self.direction = 90
@@ -157,6 +161,14 @@ class Creature(Cell):
         next_creature = self.world_map.creatures[next.i][next.j]
         end = self.goto_path[-1]
 
+        if not len(self.x_timings):
+            self.x_timings = timings(self.x, next.x, self.speed, 8)
+            print(self.x_timings)
+
+        if not len(self.y_timings):
+            self.y_timings = timings(self.y, next.y, self.speed, 8)
+            print(self.y_timings)
+
         if (isinstance(next_creature, Creature) or isinstance(next, Creature)) and next_creature != self:
             if next == end:
                 self.accept_position()
@@ -179,6 +191,8 @@ class Creature(Cell):
         if self.x == next.x and self.y == next.y and len(self.goto_path) > 0:
             self.ready_for_update_neighbors = True
             self.goto_path.pop(0)
+            self.x_timings = []
+            self.y_timings = []
 
         if not self.x == next.x:
             self.x += get_sign(next.x - self.x) * window.cell_size / 8

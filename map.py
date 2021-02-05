@@ -38,7 +38,7 @@ class Map:
         # for col in range(COLS):
         #     self.creatures[col][0] = Tank(col, 0, self)
 
-        self.creatures[0][0] = Tank(0, 0, self)
+        self.creatures[1][1] = Tank(1, 1, self)
         self.buildings[5][5] = Building(5, 5, self, 'windtrap')
         self.buildings[7][7] = Building(7, 7, self, 'construction_yard')
 

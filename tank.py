@@ -13,6 +13,7 @@ class Tank(Creature):
 
         self.hp = 10
         self.max_hp = 100
+        self.speed = 10
 
     def draw(self):
         super().draw()
