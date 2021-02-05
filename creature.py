@@ -12,6 +12,11 @@ def update(func):
         args[0].world_map.update_creatures_sf()
     return wrapped
 
+# def update_minimap(func):
+#     def wrapped(*args, **kwargs):
+#         func(*args, **kwargs)
+
+
 
 class Creature(Cell):
     def __init__(self, i, j, world_map):

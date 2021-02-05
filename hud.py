@@ -8,16 +8,15 @@ from settings import *
 import window
 import sprites
 
+
 def translate(value, leftMin, leftMax, rightMin, rightMax):
-    # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
     rightSpan = rightMax - rightMin
 
-    # Convert the left range into a 0-1 range (float)
     valueScaled = float(value - leftMin) / float(leftSpan)
 
-    # Convert the 0-1 range into a value in the right range.
     return rightMin + (valueScaled * rightSpan)
+
 
 class Hud:
     __instance = None
@@ -53,6 +52,7 @@ class Hud:
             self.minimap = []
             self.minimap_update = 0
             self.minimap_last_update = time.time()
+            self.minimap_update_line = 0
 
             Hud.__instance = self
         else:
@@ -154,36 +154,35 @@ class Hud:
             pg.draw.rect(self.sf, pg.Color('black'),
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15), 3)
 
-        minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + 500]
+        minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + WINDOW_HEIGHT - 400]
         minimap_cell_size = 200 // COLS
         mouse_x, mouse_y = pg.mouse.get_pos()
 
         pg.draw.rect(self.sf, pg.Color('blue'),
                      (*minimap_position, 200, 200), 3)
 
-        if time.time() - self.minimap_last_update > 0.1:
-            self.minimap_last_update = time.time()
-            for col in range(COLS):
-                for row in range(ROWS):
-                    color = 'black'
+        # if time.time() - self.minimap_last_update > 0.1:
+        #     self.minimap_last_update = time.time()
+        for col in range(COLS):
+            color = 'black'
 
-                    if isinstance(self.world_map.creatures[col][row], Creature):
-                        color = 'blue'
-                    elif isinstance(self.world_map.buildings[col][row], Building):
-                        color = 'blue'
-                    elif isinstance(self.world_map.ground[col][row], Ground):
-                        color = 'grey'
-                    pg.draw.rect(self.minimap_sf, pg.Color(color),
-                                 (
-                                     minimap_position[0] + minimap_cell_size * col,
-                                     minimap_position[1] + minimap_cell_size * row,
-                                     minimap_cell_size,
-                                     minimap_cell_size
-                                 ),
-                                 0
-                                )
+            if isinstance(self.world_map.creatures[col][self.minimap_update_line], Creature):
+                color = 'blue'
+            elif isinstance(self.world_map.buildings[col][self.minimap_update_line], Building):
+                color = 'blue'
+            elif isinstance(self.world_map.ground[col][self.minimap_update_line], Ground):
+                color = 'grey'
+            pg.draw.rect(self.minimap_sf, pg.Color(color),
+                         (
+                             minimap_position[0] + minimap_cell_size * col,
+                             minimap_position[1] + minimap_cell_size * self.minimap_update_line,
+                             minimap_cell_size,
+                             minimap_cell_size
+                         ),
+                         0
+                        )
 
-            pg.draw.rect(self.minimap_sf, pg.Color('red'),
+        pg.draw.rect(self.minimap_sf, pg.Color('red'),
                          (
                              minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0,
                                                              minimap_cell_size * COLS) - minimap_cell_size // 2,
@@ -192,8 +191,9 @@ class Hud:
                              minimap_cell_size,
                              minimap_cell_size
                          ),
-                         0
-                         )
+                        0
+                     )
+        self.minimap_update_line = (self.minimap_update_line + 1) % ROWS
 
         self.sc.blit(self.sf, (0, 0))
         self.sc.blit(self.minimap_sf, (0, 0))
