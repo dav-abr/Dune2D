@@ -3,6 +3,7 @@ from random import randint
 import window
 from biulding import Building
 from bulding_part import BuildingPart
+from helpers import translate
 from tank import Tank
 from settings import *
 
@@ -18,6 +19,16 @@ class EventHandler:
         x, y = pg.mouse.get_pos()
         grid_x, grid_y = (x - window.absolute_x) // window.cell_size, (y - window.absolute_y) // window.cell_size
         click = pg.mouse.get_pressed()
+
+        if x < 100:
+            window.absolute_x += translate(x, 100, 0, 0, 20)
+        elif x > WINDOW_WIDTH - 100:
+            window.absolute_x -= translate(x, WINDOW_WIDTH - 100, WINDOW_WIDTH, 0, 20)
+
+        if y < 100:
+            window.absolute_y += translate(y, 100, 0, 0, 20)
+        elif y > WINDOW_HEIGHT - 100:
+            window.absolute_y -= translate(y, WINDOW_HEIGHT - 100, WINDOW_HEIGHT, 0, 20)
 
         if click[0]:
             # for col in range(COLS):
@@ -85,3 +96,6 @@ class EventHandler:
             window.absolute_y += window.absolute_dy
         else:
             window.absolute_dy = 0
+
+        if keyinput[pg.K_ESCAPE]:
+            exit(0)

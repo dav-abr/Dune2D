@@ -21,3 +21,12 @@ def load_sprite(path, scale=window.cell_size):
 def load_building_sprite(path, width, height):
     img = pg.image.load(path)
     return pg.transform.scale(img, (window.cell_size * width, window.cell_size * height))
+
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    return round(rightMin + (valueScaled * rightSpan))

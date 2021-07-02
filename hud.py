@@ -1,7 +1,6 @@
 import pygame as pg
 import time
 from biulding import Building
-from bulding_part import BuildingPart
 from creature import Creature
 from ground import Ground
 from helpers import load_sprite
