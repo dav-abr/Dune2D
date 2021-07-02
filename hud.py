@@ -31,14 +31,18 @@ class Hud:
     def __init__(self, sc, world_map):
         if Hud.__instance is None:
             self.sc = sc
+
             self.sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
             self.minimap_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
+            self.minimap_cursor_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
             self.cursor_sf = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pg.SRCALPHA, 32).convert_alpha()
+
             self.world_map = world_map
             self.target = None
             self.building_placement = None
             self.can_place = None
             self.target_select_delay_counter = 0
+
             self.creature_select = load_sprite('./hud/creature_select.png')
             self.building_select = [
                 load_sprite('./hud/building_select_up_left.png'),
@@ -50,6 +54,8 @@ class Hud:
                 load_sprite('./hud/building_place_accept.png'),
                 load_sprite('./hud/building_place_not_accept.png')
             ]
+
+            self.minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + WINDOW_HEIGHT - 400]
             self.minimap = []
             self.minimap_update = 0
             self.minimap_last_update = time.time()
@@ -155,12 +161,24 @@ class Hud:
             pg.draw.rect(self.sf, pg.Color('black'),
                          (*hp_position, target_image.get_rect().size[0] * hp_percentage, 15), 3)
 
-        minimap_position = [WINDOW_WIDTH - 200 - 48, 168 + WINDOW_HEIGHT - 400]
         minimap_cell_size = 200 // COLS
         mouse_x, mouse_y = pg.mouse.get_pos()
 
         pg.draw.rect(self.sf, pg.Color('blue'),
-                     (*minimap_position, 200, 200), 3)
+                     (*self.minimap_position, 200, 200), 3)
+
+        self.minimap_cursor_sf.fill(pg.Color(0, 0, 0, 0))
+        pg.draw.rect(self.minimap_cursor_sf, pg.Color('red'),
+                     (
+                         self.minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0,
+                                                              minimap_cell_size * COLS) - minimap_cell_size // 2,
+                         self.minimap_position[1] + translate(mouse_y - window.absolute_y, 0, CELL_SIZE * ROWS, 0,
+                                                              minimap_cell_size * ROWS) - minimap_cell_size // 2,
+                         minimap_cell_size,
+                         minimap_cell_size
+                     ),
+                     0
+                     )
 
         for col in range(COLS):
             color = 'black'
@@ -173,29 +191,19 @@ class Hud:
                 color = 'grey'
             pg.draw.rect(self.minimap_sf, pg.Color(color),
                          (
-                             minimap_position[0] + minimap_cell_size * col,
-                             minimap_position[1] + minimap_cell_size * self.minimap_update_line,
+                             self.minimap_position[0] + minimap_cell_size * col,
+                             self.minimap_position[1] + minimap_cell_size * self.minimap_update_line,
                              minimap_cell_size,
                              minimap_cell_size
                          ),
                          0
                         )
 
-        pg.draw.rect(self.minimap_sf, pg.Color('red'),
-                         (
-                             minimap_position[0] + translate(mouse_x - window.absolute_x, 0, CELL_SIZE * COLS, 0,
-                                                             minimap_cell_size * COLS) - minimap_cell_size // 2,
-                             minimap_position[1] + translate(mouse_y - window.absolute_y, 0, CELL_SIZE * ROWS, 0,
-                                                             minimap_cell_size * ROWS) - minimap_cell_size // 2,
-                             minimap_cell_size,
-                             minimap_cell_size
-                         ),
-                        0
-                     )
         self.minimap_update_line = (self.minimap_update_line + 1) % ROWS
 
         self.sc.blit(self.sf, (0, 0))
         self.sc.blit(self.minimap_sf, (0, 0))
+        self.sc.blit(self.minimap_cursor_sf, (0, 0))
 
         if not self.building_placement:
             self.cursor_sf.fill(pg.Color(0, 0, 0, 0))
