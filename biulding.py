@@ -1,10 +1,12 @@
 import pygame as pg
+from bulding_part import BuildingPart
 from cell import Cell
 import sprites
 import window
+from wall import Wall
 
 
-class Building(Cell):
+class Building(Cell, Wall):
     indicator_angle = 0
 
     def __init__(self, i, j, world_map, name):
@@ -19,12 +21,13 @@ class Building(Cell):
         self.max_hp = 100
         for w in range(self.width):
             for h in range(self.height):
-                self.world_map.buildings[self.i + w][self.j + h] = self
+                self.world_map.buildings[self.i + w][self.j + h] = BuildingPart(self.i + w, self.j + h, self.world_map, self)
+                self.world_map.buildings[self.i + w][self.j + h].update_neighbors()
         self.update_neighbors()
         self.world_map.update_buildings_sf()
 
     @staticmethod
-    def draw2():
+    def draw_indicator():
         Building.indicator_angle = (Building.indicator_angle + 5) % 360
 
     def draw(self):

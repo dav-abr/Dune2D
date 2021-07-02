@@ -1,4 +1,5 @@
 from biulding import Building
+from bulding_part import BuildingPart
 from cell import Cell
 from wall import Wall
 from settings import *
@@ -67,7 +68,7 @@ class Creature(Cell):
                 if (ground_neighbor not in self.closed_set) and\
                    not isinstance(neighbor[0], Wall) and\
                    not isinstance(neighbor[1], Creature) and \
-                   not isinstance(neighbor[2], Building):
+                   not isinstance(neighbor[2], Wall):
                     tempG = current.g + ground_neighbor.g
 
                     if ground_neighbor in self.open_set:

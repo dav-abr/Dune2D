@@ -53,7 +53,7 @@ class Map:
 
     def draw(self):
         self.sc.fill((166, 130, 66))
-        Building.draw2()
+        Building.draw_indicator()
 
         for col in range(COLS):
             for row in range(ROWS):

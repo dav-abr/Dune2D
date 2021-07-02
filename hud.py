@@ -1,12 +1,14 @@
 import pygame as pg
 import time
 from biulding import Building
+from bulding_part import BuildingPart
 from creature import Creature
 from ground import Ground
 from helpers import load_sprite
 from settings import *
 import window
 import sprites
+from wall import Wall
 
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
@@ -95,7 +97,7 @@ class Hud:
 
                 for i in range(2):
                     for j in range(2):
-                        if isinstance(self.world_map.buildings[grid_x + i][grid_y + j], Building) or isinstance(self.world_map.creatures[grid_x + i][grid_y + j], Creature):
+                        if isinstance(self.world_map.buildings[grid_x + i][grid_y + j], Wall) or isinstance(self.world_map.creatures[grid_x + i][grid_y + j], Creature):
                             self.can_place = False
 
                 for i in range(2):
@@ -161,14 +163,12 @@ class Hud:
         pg.draw.rect(self.sf, pg.Color('blue'),
                      (*minimap_position, 200, 200), 3)
 
-        # if time.time() - self.minimap_last_update > 0.1:
-        #     self.minimap_last_update = time.time()
         for col in range(COLS):
             color = 'black'
 
             if isinstance(self.world_map.creatures[col][self.minimap_update_line], Creature):
                 color = 'blue'
-            elif isinstance(self.world_map.buildings[col][self.minimap_update_line], Building):
+            elif isinstance(self.world_map.buildings[col][self.minimap_update_line], Wall):
                 color = 'blue'
             elif isinstance(self.world_map.ground[col][self.minimap_update_line], Ground):
                 color = 'grey'

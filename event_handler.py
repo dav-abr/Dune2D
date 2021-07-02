@@ -2,6 +2,7 @@ import pygame as pg
 from random import randint
 import window
 from biulding import Building
+from bulding_part import BuildingPart
 from tank import Tank
 from settings import *
 
@@ -22,13 +23,15 @@ class EventHandler:
             # for col in range(COLS):
             #     self.world_map.creatures[col][0].go_to(self.world_map.ground[randint(0, COLS - 1)][randint(0, ROWS - 1)])
             if self.building_placement and self.hud.can_place:
-                self.world_map.buildings[grid_x][grid_y] = Building(grid_x, grid_y, self.world_map, self.building_placement)
+                self.world_map.buildings[grid_x][grid_y] = Building(grid_x, grid_y, self.world_map,
+                                                                    self.building_placement)
                 self.target = None
                 self.building_placement = None
                 self.hud.building_placement = None
 
             if self.target:
-                if isinstance(self.target, Tank) and not self.world_map.ground[grid_x][grid_y].wall and self.target.x != grid_x and self.target.y != grid_y:
+                if isinstance(self.target, Tank) and not self.world_map.ground[grid_x][
+                    grid_y].wall and self.target.x != grid_x and self.target.y != grid_y:
                     self.target.go_to(self.world_map.ground[grid_x][grid_y])
                     self.hud.target = None
                     self.target = None
@@ -37,8 +40,15 @@ class EventHandler:
             if self.world_map.creatures[grid_x][grid_y] and isinstance(self.world_map.creatures[grid_x][grid_y], Tank):
                 self.target = self.world_map.creatures[grid_x][grid_y]
                 self.hud.target = self.target
-            elif self.world_map.buildings[grid_x][grid_y] and isinstance(self.world_map.buildings[grid_x][grid_y], Building):
-                self.target = self.world_map.buildings[grid_x][grid_y]
+            elif self.world_map.buildings[grid_x][grid_y] and \
+                    (isinstance(self.world_map.buildings[grid_x][grid_y], Building) or
+                     isinstance(self.world_map.buildings[grid_x][grid_y], BuildingPart)):
+                building = self.world_map.buildings[grid_x][grid_y]
+
+                if isinstance(building, BuildingPart):
+                    building = building.parent
+
+                self.target = building
                 if self.target.name == 'construction_yard':
                     self.hud.building_placement = (Building, 'windtrap')
                     self.building_placement = 'windtrap'
