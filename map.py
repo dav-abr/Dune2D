@@ -1,6 +1,7 @@
 import pygame as pg
 
 from biulding import Building
+from bullet import Bullet
 from settings import *
 from cell import Cell
 from ground import Ground
@@ -15,6 +16,7 @@ class Map:
         self.ground_sf = pg.Surface((COLS * window.cell_size, ROWS * window.cell_size), pg.SRCALPHA, 32).convert_alpha()
         self.buildings_sf = pg.Surface((COLS * window.cell_size, ROWS * window.cell_size), pg.SRCALPHA, 32).convert_alpha()
         self.creatures_sf = pg.Surface((COLS * window.cell_size, ROWS * window.cell_size), pg.SRCALPHA, 32).convert_alpha()
+        self.bullets_sf = pg.Surface((COLS * window.cell_size, ROWS * window.cell_size), pg.SRCALPHA, 32).convert_alpha()
 
         self.__update_ground_sf = True
         self.__update_buildings_sf = True
@@ -34,6 +36,8 @@ class Map:
             self.buildings = buildings
         else:
             self.buildings = [[Cell(col, row, self) for row in range(ROWS)] for col in range(COLS)]
+
+        self.bullets = []
 
         # for col in range(COLS):
         #     self.creatures[col][0] = Tank(col, 0, self)
@@ -98,6 +102,12 @@ class Map:
 
             self.__update_creatures_sf = False
 
+        self.bullets_sf.fill(pg.Color(0, 0, 0, 0))
+
+        for bullet in self.bullets:
+            bullet.draw()
+
         self.sc.blit(self.ground_sf, (window.absolute_x, window.absolute_y))
         self.sc.blit(self.buildings_sf, (window.absolute_x, window.absolute_y))
         self.sc.blit(self.creatures_sf, (window.absolute_x, window.absolute_y))
+        self.sc.blit(self.bullets_sf, (window.absolute_x, window.absolute_y))

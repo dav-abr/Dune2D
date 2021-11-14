@@ -1,4 +1,5 @@
 from helpers import load_sprite, load_building_sprite
+import settings
 import window
 
 
@@ -23,7 +24,8 @@ def init():
                 'vertical_down_right': load_sprite('./sprites/moto_angle_vertical_down_right.png'),
                 'vertical_up_right': load_sprite('./sprites/moto_angle_vertical_up_right.png'),
                 'vertical_up_left': load_sprite('./sprites/moto_angle_vertical_up_left.png'),
-            }
+            },
+            'bullet': load_sprite('./sprites/bullet.png', settings.PIXEL_SIZE * 4)
         },
         'buildings': {
             'windtrap': load_building_sprite('./houses/{0}.png'.format('windtrap'), 2, 2),

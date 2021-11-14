@@ -1,6 +1,7 @@
 import pygame as pg
+
+from bullet import Bullet
 from creature import Creature
-from helpers import load_sprite
 import sprites
 
 
@@ -11,8 +12,11 @@ class Tank(Creature):
         self.sprite = self.sprites['straight_left']
         self.hud_image = pg.image.load('./hud/moto.png')
 
-        self.hp = 10
+        self.hp = 100
         self.max_hp = 100
+
+    def shoot(self, target):
+        self.world_map.bullets.append(Bullet('', 10, self, target, self.world_map))
 
     def draw(self):
         super().draw()

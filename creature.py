@@ -13,11 +13,6 @@ def update(func):
         args[0].world_map.update_creatures_sf()
     return wrapped
 
-# def update_minimap(func):
-#     def wrapped(*args, **kwargs):
-#         func(*args, **kwargs)
-
-
 
 class Creature(Cell):
     def __init__(self, i, j, world_map):
@@ -32,6 +27,7 @@ class Creature(Cell):
         self.hp = 0
         self.max_hp = 0
         self.world_map.update_creatures_sf()
+        self.rotate_to_angle = None
 
     def accept_position(self):
         self.open_set = [self.world_map.ground[self.i][self.j]]
@@ -191,9 +187,17 @@ class Creature(Cell):
         if not self.y == next.y:
             self.y += get_sign(next.y - self.y) * window.cell_size / 8
 
+    def hit(self):
+        self.hp -= 10
+
     def draw(self):
         super().draw()
         if len(self.goto_path):
             if self.rotate_to_next():
                 self.move()
+        if self.rotate_to_angle:
+            print(self.direction)
+            self.rotate(self.rotate_to_angle)
+            if self.direction == self.rotate_to_angle:
+                self.rotate_to_angle = None
 

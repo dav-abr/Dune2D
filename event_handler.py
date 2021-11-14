@@ -65,6 +65,12 @@ class EventHandler:
                     self.building_placement = 'windtrap'
                 self.hud.target = self.target
 
+        if click[2]:
+            if self.target and isinstance(self.target, Tank):
+                self.target.shoot((grid_x, grid_y))
+                self.hud.target = None
+                self.target = None
+
         keyinput = pg.key.get_pressed()
 
         if keyinput[pg.K_LEFT]:
