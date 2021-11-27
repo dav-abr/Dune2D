@@ -38,3 +38,13 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
 def get_cell(x, y):
     return int(x / window.cell_size), int(y / window.cell_size)
+
+
+def closest(num, arr):
+    curr = arr[0]
+
+    for val in arr:
+        if abs(num - val) < abs(num - curr):
+            curr = val
+
+    return curr

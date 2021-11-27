@@ -1,5 +1,6 @@
 from settings import *
 
+
 def init():
     global absolute_x, absolute_y, cell_size
     absolute_x = 0

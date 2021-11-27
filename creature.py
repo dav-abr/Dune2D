@@ -22,7 +22,7 @@ class Creature(Cell):
         self.open_set = [self.world_map.ground[self.i][self.j]]
         self.closed_set = []
         self.goto_path = []
-        self.direction = 90
+        self.direction = 0
         self.ready_for_update_neighbors = True
         self.hp = 0
         self.max_hp = 0
@@ -195,8 +195,7 @@ class Creature(Cell):
         if len(self.goto_path):
             if self.rotate_to_next():
                 self.move()
-        if self.rotate_to_angle:
-            print(self.direction)
+        if self.rotate_to_angle is not None:
             self.rotate(self.rotate_to_angle)
             if self.direction == self.rotate_to_angle:
                 self.rotate_to_angle = None

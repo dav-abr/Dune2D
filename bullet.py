@@ -5,7 +5,7 @@ import math
 import window
 from creature import Creature
 from helpers import get_cell
-from settings import WINDOW_WIDTH, WINDOW_HEIGHT
+from settings import MAP_WIDTH, MAP_HEIGHT
 
 from cell import Cell
 
@@ -29,7 +29,6 @@ class Bullet:
         angle = math.atan2(y_diff, x_diff)
         self.change_x = math.cos(angle) * self.speed
         self.change_y = math.sin(angle) * self.speed
-        print(self.target)
 
     def draw(self):
         if self.change_x >= 0:
@@ -59,7 +58,7 @@ class Bullet:
 
         i, j = get_cell(self.x, self.y)
 
-        if 0 < self.x < WINDOW_WIDTH and 0 < self.y < WINDOW_HEIGHT:
+        if 0 < self.x < MAP_WIDTH and 0 < self.y < MAP_HEIGHT:
             if isinstance(self.world_map.creatures[i][j], Creature) and self.world_map.creatures[i][j] != self.from_:
                 self.world_map.creatures[i][j].hit()
                 self.world_map.bullets.remove(self)

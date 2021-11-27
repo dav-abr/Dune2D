@@ -3,6 +3,10 @@ import pygame as pg
 from bullet import Bullet
 from creature import Creature
 import sprites
+import math
+
+from helpers import closest
+from settings import ANGLES
 
 
 class Tank(Creature):
@@ -16,6 +20,13 @@ class Tank(Creature):
         self.max_hp = 100
 
     def shoot(self, target):
+        deltaX = target[0] - self.i
+        deltaY = target[1] - self.j
+        angle = math.degrees(-math.atan2(deltaY, deltaX)) - 90
+        if angle < 0:
+            angle += 360
+
+        self.rotate_to_angle = closest(angle, ANGLES)
         self.world_map.bullets.append(Bullet('', 10, self, target, self.world_map))
 
     def draw(self):
